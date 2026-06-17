@@ -629,111 +629,304 @@
   }
   .resume-btns { display: flex; gap: 0.75rem; }
 
-  /* AI AGENT BUBBLE */
-  .ai-bubble {
+  /* ── AI WIDGET LAUNCHER ── */
+  #dh-launcher {
     position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    z-index: 200;
-  }
-  .ai-btn {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    padding: 0.75rem 1.25rem;
-    border: 1px solid var(--border-cyan);
-    background: var(--bg-card);
-    color: var(--cyan);
-    cursor: pointer;
+    bottom: 28px;
+    right: 28px;
+    z-index: 8888;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: background 0.2s;
-  }
-  .ai-btn:hover { background: var(--cyan-dim); }
-
-  .ai-panel {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 0.75rem);
-    right: 0;
-    width: 320px;
+    gap: 9px;
+    padding: 11px 18px;
     background: var(--bg-card);
     border: 1px solid var(--border-cyan);
-  }
-  .ai-panel.open { display: flex; flex-direction: column; }
-
-  .ai-panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .ai-panel-title {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
     color: var(--cyan);
-  }
-  .ai-close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 16px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-  }
-  .ai-close:hover { color: var(--text); }
-
-  .ai-messages {
-    padding: 1rem;
-    height: 200px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    line-height: 1.7;
-  }
-  .ai-msg-bot { color: var(--text-mid); }
-  .ai-msg-user { color: var(--cyan); text-align: right; }
-  .ai-msg-bot strong { color: var(--cyan); }
-
-  .ai-input-row {
-    display: flex;
-    border-top: 1px solid var(--border);
-  }
-  .ai-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    padding: 0.75rem 1rem;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text);
-    caret-color: var(--cyan);
-  }
-  .ai-input::placeholder { color: var(--text-muted); }
-  .ai-send {
-    background: none;
-    border: none;
-    border-left: 1px solid var(--border);
-    color: var(--cyan);
-    padding: 0 1rem;
-    cursor: pointer;
     font-family: var(--font-mono);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(61,214,172,0.1), 0 4px 20px rgba(0,0,0,0.5);
+    transition: all 0.2s;
+    white-space: nowrap;
   }
-  .ai-send:hover { background: var(--cyan-dim); }
-  .ai-thinking { color: var(--text-muted); font-style: italic; }
+  #dh-launcher:hover {
+    background: var(--cyan-dim);
+    box-shadow: 0 0 30px rgba(61,214,172,0.2), 0 8px 30px rgba(0,0,0,0.5);
+  }
+  #dh-launcher .launcher-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  #dh-launcher .launcher-icon { font-size: 15px; flex-shrink: 0; }
+  #dh-launcher .launcher-close { display: none; }
+  #dh-launcher.open .launcher-label { display: none; }
+  #dh-launcher.open .launcher-close { display: inline; }
+  #dh-launcher.open .launcher-dot { display: none; }
+
+  /* ── AI WIDGET PANEL ── */
+  #dh-widget {
+    position: fixed;
+    bottom: 86px;
+    right: 28px;
+    width: 400px;
+    height: 560px;
+    z-index: 8887;
+    background: var(--bg-card);
+    border: 1px solid var(--border-cyan);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(61,214,172,0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.92) translateY(16px);
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: bottom right;
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+  }
+  #dh-widget.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+  #dh-widget .w-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #dh-widget .w-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--cyan-dim);
+    border: 1px solid var(--border-cyan);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cyan);
+    flex-shrink: 0;
+  }
+  #dh-widget .w-title { flex: 1; }
+  #dh-widget .w-title h4 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+  #dh-widget .w-title p {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 1px;
+    letter-spacing: 0.04em;
+  }
+  #dh-widget .w-full-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--cyan);
+    text-decoration: none;
+    border: 1px solid var(--border-cyan);
+    padding: 4px 8px;
+    letter-spacing: 0.06em;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  #dh-widget .w-full-btn:hover { background: var(--cyan-dim); }
+
+  /* chips */
+  #dh-widget .w-chips {
+    display: flex;
+    gap: 6px;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  #dh-widget .w-chips::-webkit-scrollbar { height: 2px; }
+  #dh-widget .w-chips::-webkit-scrollbar-thumb { background: var(--border-cyan); }
+  #dh-widget .w-chip {
+    white-space: nowrap;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  #dh-widget .w-chip:hover { border-color: var(--border-cyan); color: var(--cyan); background: var(--cyan-dim); }
+
+  /* messages */
+  #dh-widget .w-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+  }
+  #dh-widget .w-messages::-webkit-scrollbar { width: 3px; }
+  #dh-widget .w-messages::-webkit-scrollbar-thumb { background: var(--border-cyan); }
+  #dh-widget .wm { display: flex; gap: 8px; }
+  #dh-widget .wm.user { flex-direction: row-reverse; }
+  #dh-widget .wm-av {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  #dh-widget .wm.ai .wm-av { background: var(--cyan-dim); border: 1px solid var(--border-cyan); color: var(--cyan); }
+  #dh-widget .wm.user .wm-av { background: var(--purple-dim); border: 1px solid var(--border-purple); color: var(--purple); }
+  #dh-widget .wm-bubble {
+    max-width: 85%;
+    padding: 9px 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  #dh-widget .wm.ai .wm-bubble { background: var(--bg); border: 1px solid var(--border); color: var(--text-mid); }
+  #dh-widget .wm.user .wm-bubble { background: var(--purple-dim); border: 1px solid var(--border-purple); color: var(--text); }
+  #dh-widget .wm-bubble strong { color: var(--cyan); }
+  #dh-widget .wm-bubble em { color: var(--pink); font-style: normal; }
+  #dh-widget .wm-bubble code { font-family: var(--font-mono); font-size: 11px; background: rgba(255,255,255,0.06); padding: 1px 4px; color: var(--cyan); }
+  #dh-widget .wm-bubble ul { padding-left: 14px; margin-top: 4px; }
+  #dh-widget .wm-bubble li { margin-bottom: 3px; }
+  #dh-widget .wm-bubble p + p { margin-top: 6px; }
+  #dh-widget .wm-bubble a { color: var(--cyan); }
+
+  /* typing dots */
+  #dh-widget .w-typing {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 9px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+  #dh-widget .w-typing span {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: wBlink 1.2s ease-in-out infinite;
+  }
+  #dh-widget .w-typing span:nth-child(2) { animation-delay: 0.2s; }
+  #dh-widget .w-typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes wBlink { 0%,80%,100%{opacity:0.2;transform:scale(.85)} 40%{opacity:1;transform:scale(1)} }
+
+  /* welcome */
+  #dh-widget .w-welcome { text-align: center; padding: 16px 12px; }
+  #dh-widget .w-welcome h5 {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+  #dh-widget .w-welcome p {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* input */
+  #dh-widget .w-input {
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 7px;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+  #dh-widget .w-input textarea {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    resize: none;
+    outline: none;
+    min-height: 36px;
+    max-height: 90px;
+    line-height: 1.5;
+    transition: border-color 0.2s;
+    caret-color: var(--cyan);
+  }
+  #dh-widget .w-input textarea:focus { border-color: var(--border-cyan); }
+  #dh-widget .w-input textarea::placeholder { color: var(--text-muted); }
+  #dh-widget .w-send {
+    width: 36px; height: 36px;
+    background: var(--cyan-dim);
+    border: 1px solid var(--border-cyan);
+    color: var(--cyan);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  #dh-widget .w-send:hover { background: rgba(61,214,172,0.3); }
+  #dh-widget .w-send:disabled { background: transparent; color: var(--text-muted); border-color: var(--border); cursor: not-allowed; }
+
+  /* footer */
+  #dh-widget .w-footer {
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  #dh-widget .w-footer span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+  #dh-widget .w-resume-btn {
+    padding: 5px 10px;
+    background: transparent;
+    border: 1px solid var(--border-pink);
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: background 0.15s;
+  }
+  #dh-widget .w-resume-btn:hover { background: var(--pink-dim); }
+
+  /* mobile */
+  @media (max-width: 768px) {
+    #dh-widget { width: calc(100vw - 24px); right: 12px; bottom: 74px; }
+    #dh-launcher { right: 12px; bottom: 20px; }
+  }
+
+  @keyframes wFade { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+  #dh-widget .wm { animation: wFade 0.2s ease; }
 
   /* FOOTER */
   footer {
@@ -764,34 +957,6 @@
 
     /* Move scroll hint down on mobile so it clears the CTAs */
     .scroll-hint { bottom: 0.5rem; }
-
-    /* AI bubble — full width panel on mobile */
-    .ai-bubble {
-      bottom: 0;
-      right: 0;
-      left: 0;
-      width: 100%;
-    }
-    .ai-btn {
-      width: 100%;
-      justify-content: center;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      border-bottom: none;
-      padding: 1rem;
-    }
-    .ai-panel {
-      position: fixed;
-      bottom: 52px;
-      left: 0;
-      right: 0;
-      width: 100%;
-      border-left: none;
-      border-right: none;
-      border-radius: 0;
-    }
-    .ai-messages { height: 220px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1127,88 +1292,195 @@
 </section>
 
 <footer>
-  <p>Built with vanilla HTML &middot; <span>danhino.com</span> hosted on Vercel &middot; &copy; 2026 Daniel Hinojosa</p>
+  <p>Built by DANHINO &middot; <span>danhino.com</span> hosted on Vercel</p>
   <p style="margin-top:0.5rem;">Houston, TX &middot; Open to remote, hybrid &amp; on-site &middot; <a href="https://danhino.github.io" target="_blank" rel="noopener" style="color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--border);">danhino.github.io</a></p>
 </footer>
 
-<!-- AI AGENT BUBBLE -->
-<div class="ai-bubble">
-  <div class="ai-panel" id="aiPanel">
-    <div class="ai-panel-header">
-      <span class="ai-panel-title">&#x1F916; Ask Daniel's AI</span>
-      <button class="ai-close" onclick="toggleAI()" aria-label="Close">&times;</button>
+<!-- ── Floating Launcher Button ── -->
+<button id="dh-launcher" onclick="dhToggleWidget()" aria-label="Chat with Daniel's AI Agent">
+  <span class="launcher-dot"></span>
+  <span class="launcher-icon">🤖</span>
+  <span class="launcher-label">Ask Daniel's AI</span>
+  <span class="launcher-close">✕ Close</span>
+</button>
+
+<!-- ── Floating Widget Panel ── -->
+<div id="dh-widget" role="dialog" aria-label="Daniel's AI Agent Chat">
+  <div class="w-header">
+    <div class="w-avatar">DH</div>
+    <div class="w-title">
+      <h4>Ask Daniel's AI Agent</h4>
+      <p>TPM · Integrations · 20+ yrs exp · Houston TX</p>
     </div>
-    <div class="ai-messages" id="aiMessages">
-      <div class="ai-msg-bot"><strong>Hi, I'm Daniel's AI.</strong><br>Ask me about his experience, skills, or availability.</div>
-    </div>
-    <div class="ai-input-row">
-      <input class="ai-input" id="aiInput" type="text" placeholder="Ask something..." autocomplete="off" />
-      <button class="ai-send" onclick="sendAI()">Send</button>
+    <a class="w-full-btn" href="/ai-agent.html" target="_blank">Full view ↗</a>
+  </div>
+  <div class="w-chips" id="dh-wchips"></div>
+  <div class="w-messages" id="dh-wmsgs">
+    <div class="w-welcome" id="dh-wwelcome">
+      <h5>👋 Hi, I'm Daniel's AI</h5>
+      <p>Ask me anything about his experience, skills, or how to get in touch.</p>
     </div>
   </div>
-  <button class="ai-btn" onclick="toggleAI()">&#x1F916; Ask Daniel's AI</button>
+  <div class="w-input">
+    <textarea id="dh-winput" rows="1" placeholder="Ask about Daniel..."></textarea>
+    <button class="w-send" id="dh-wsend" onclick="dhSendMessage()" title="Send">↑</button>
+  </div>
+  <div class="w-footer">
+    <span>Powered by Claude AI</span>
+    <a class="w-resume-btn" href="/Daniel_Hinojosa_Resume_Styled.pdf" target="_blank">⬇ Download Résumé</a>
+  </div>
 </div>
 
 <script>
-function toggleAI() {
-  const panel = document.getElementById('aiPanel');
-  panel.classList.toggle('open');
-  if (panel.classList.contains('open')) {
-    document.getElementById('aiInput').focus();
+(function() {
+  const W_SYSTEM = `You are an AI agent representing Daniel Hinojosa's professional profile. Answer in 1st person on his behalf. Be concise (2-3 sentences or a short bullet list). Only state documented facts. For contact, direct to dan.hinojosa@gmail.com or linkedin.com/in/danhinojosa.
+
+PROFILE SUMMARY:
+- Name: Daniel Hinojosa | Title: Technical Program Manager | Location: Houston TX
+- Nearly 20 years in mortgage & financial services technology
+- Specialties: Enterprise API integrations, middleware platforms, SaaS platform delivery
+- Most recent full-time: TPM at Dark Matter Technologies (2016–2025) managing the Exchange Service Network — a SaaS integration backbone with 200+ third-party integrations for LOS clients via REST/SOAP APIs
+- Currently: Independent Consultant (AI claims processor, maintenance ticketing system)
+- Side projects: Fuerza Home Services (bilingual on-demand home services marketplace — React Native, Node.js, PostgreSQL, Stripe) and AI Transparent Notes (Tauri desktop app)
+- Skills: REST/SOAP APIs, OAuth 2.0/JWT, MISMO 3.4, AWS Lambda, Azure DevOps, React Native, TypeScript, Node.js, PostgreSQL, Stripe, Agile/SAFe
+- Seeking: TPM, Application Owner, IT Manager, Enterprise PM roles — remote/hybrid/on-site
+- Email: dan.hinojosa@gmail.com | LinkedIn: linkedin.com/in/danhinojosa
+
+CORE COMPETENCIES:
+- Cloud & Infrastructure: AWS (Lambda, API Gateway, S3), serverless architecture, scalable system design
+- Observability & Reliability: AWS CloudWatch, Splunk, system monitoring, incident response, performance tracking
+- Mortgage Domain: Loan Origination Systems (LOS/Empower), mortgage Exchange platform, MISMO, regulatory compliance
+- Security & API: OAuth 2.0 / JWT authentication, API testing (Postman)
+- AI & Data Science: NLP, LLMs, AI-assisted categorization, Cursor AI
+- Agile / Hybrid Delivery: Sprint planning, backlog grooming, iterative requirements, release planning
+- Team Leadership: Cross-functional team oversight, PM coaching, onshore/offshore coordination
+- Financial & Vendor Management: Program budgets, resource planning, contract management`;
+
+  const W_CHIPS = [
+    "Tell me about Daniel's experience.",
+    "Is he open to remote?",
+    "Tell me about Exchange platform",
+    "What's Fuerza Home Services?",
+    "How to contact Daniel?",
+  ];
+
+  let wHistory = [], wLoading = false, wOpen = false, wTypingId = 0;
+
+  const wChipsEl = document.getElementById('dh-wchips');
+  W_CHIPS.forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'w-chip';
+    b.textContent = q;
+    b.onclick = () => dhAskQuestion(q);
+    wChipsEl.appendChild(b);
+  });
+
+  const wta = document.getElementById('dh-winput');
+  wta.addEventListener('input', () => {
+    wta.style.height = 'auto';
+    wta.style.height = Math.min(wta.scrollHeight, 90) + 'px';
+  });
+  wta.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); dhSendMessage(); }
+  });
+
+  window.dhToggleWidget = function() {
+    wOpen = !wOpen;
+    document.getElementById('dh-widget').classList.toggle('open', wOpen);
+    document.getElementById('dh-launcher').classList.toggle('open', wOpen);
+    if (wOpen) wta.focus();
+  };
+
+  window.dhAskQuestion = function(q) {
+    wta.value = q;
+    dhSendMessage();
+  };
+
+  window.dhSendMessage = async function() {
+    if (wLoading) return;
+    const text = wta.value.trim();
+    if (!text) return;
+    const welcome = document.getElementById('dh-wwelcome');
+    if (welcome) welcome.remove();
+    wta.value = '';
+    wta.style.height = 'auto';
+    wHistory.push({ role: 'user', content: text });
+    wAppendMsg('user', text);
+    const tid = wShowTyping();
+    wLoading = true;
+    document.getElementById('dh-wsend').disabled = true;
+    try {
+      const resp = await fetch('https://daniel-aiagent-proxy.dan-hinojosa.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 400,
+          system: W_SYSTEM,
+          messages: wHistory.slice(-8),
+        }),
+      });
+      wRemoveTyping(tid);
+      if (!resp.ok) {
+        const e = await resp.json().catch(()=>({}));
+        wAppendMsg('ai', `Error ${resp.status}: ${e?.error?.message || 'API error'}. <a href="mailto:dan.hinojosa@gmail.com">Contact Daniel directly.</a>`);
+      } else {
+        const data = await resp.json();
+        const reply = data.content?.[0]?.text || 'No response.';
+        wAppendMsg('ai', wFormat(reply));
+        wHistory.push({ role: 'assistant', content: reply });
+      }
+    } catch(e) {
+      wRemoveTyping(tid);
+      wAppendMsg('ai', `⚠ Connection error. <a href="mailto:dan.hinojosa@gmail.com">Email Daniel directly.</a>`);
+    } finally {
+      wLoading = false;
+      document.getElementById('dh-wsend').disabled = false;
+    }
+  };
+
+  function wFormat(t) {
+    t = t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    t = t.replace(/\*(.*?)\*/g,'<em>$1</em>');
+    t = t.replace(/`([^`]+)`/g,'<code>$1</code>');
+    t = t.replace(/^[-•] (.+)$/gm,'<li>$1</li>');
+    t = t.replace(/(<li>.*<\/li>)/gs,'<ul>$1</ul>');
+    t = t.split('\n\n').map(p=>p.trim()).filter(Boolean)
+      .map(p=>p.startsWith('<ul>')?p:`<p>${p.replace(/\n/g,'<br/>')}</p>`).join('');
+    return t;
   }
-}
 
-document.getElementById('aiInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') sendAI();
-});
-
-async function sendAI() {
-  const input = document.getElementById('aiInput');
-  const messages = document.getElementById('aiMessages');
-  const question = input.value.trim();
-  if (!question) return;
-
-  const userMsg = document.createElement('div');
-  userMsg.className = 'ai-msg-user';
-  userMsg.textContent = question;
-  messages.appendChild(userMsg);
-  input.value = '';
-
-  const thinking = document.createElement('div');
-  thinking.className = 'ai-msg-bot ai-thinking';
-  thinking.textContent = 'Thinking...';
-  messages.appendChild(thinking);
-  messages.scrollTop = messages.scrollHeight;
-
-  try {
-    const res = await fetch('https://daniel-aiagent-proxy.dan-hinojosa.workers.dev/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{
-          role: 'user',
-          content: question
-        }],
-        system: `You are Daniel Hinojosa's AI assistant on his personal portfolio site (danhino.com). 
-Answer questions about Daniel's professional background concisely and helpfully.
-Daniel is a Technical Program Manager with 20 years in mortgage and financial services technology.
-He owned the Exchange Service Network at Dark Matter Technologies (formerly Black Knight).
-He's an indie developer building Fuerza Home Services (React Native mobile app) and AI Transparent Notes (Tauri desktop app).
-He's based in Houston TX, bilingual EN/ES, open to TPM, Application Owner, IT Manager roles.
-Keep answers under 3 sentences unless more detail is needed. Be professional but friendly.`
-      })
-    });
-    const data = await res.json();
-    thinking.remove();
-    const botMsg = document.createElement('div');
-    botMsg.className = 'ai-msg-bot';
-    botMsg.textContent = data.content?.[0]?.text || data.response || 'Sorry, something went wrong.';
-    messages.appendChild(botMsg);
-  } catch {
-    thinking.textContent = 'Could not connect. Try the full agent at danhino.com/ai-agent.html';
+  function wAppendMsg(role, html) {
+    const msgs = document.getElementById('dh-wmsgs');
+    const d = document.createElement('div');
+    d.className = `wm ${role}`;
+    const av = document.createElement('div');
+    av.className = 'wm-av';
+    av.textContent = role === 'ai' ? 'DH' : 'You';
+    const b = document.createElement('div');
+    b.className = 'wm-bubble';
+    b.innerHTML = html;
+    d.appendChild(av); d.appendChild(b);
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
   }
-  messages.scrollTop = messages.scrollHeight;
-}
+
+  function wShowTyping() {
+    const id = `wt-${wTypingId++}`;
+    const msgs = document.getElementById('dh-wmsgs');
+    const d = document.createElement('div');
+    d.className = 'wm ai'; d.id = id;
+    d.innerHTML = `<div class="wm-av">DH</div><div class="w-typing"><span></span><span></span><span></span></div>`;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+    return id;
+  }
+
+  function wRemoveTyping(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+})();
 </script>
 <script>
 // ── TEXT SCRAMBLE (name only, no layout disruption) ──────────────────────────
@@ -1239,7 +1511,7 @@ class TextScramble {
   update() {
     let output = '';
     let complete = 0;
-    const colors = ['#3dd6ac', '#9b6dff'];
+    const colors = ['#3dd6ac', '#9b6dff', '#ff6b9d'];
     for (let i = 0, n = this.queue.length; i < n; i++) {
       let { to, start, end, char } = this.queue[i];
       if (this.frame >= end) {
