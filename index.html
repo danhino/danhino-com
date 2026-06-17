@@ -123,6 +123,11 @@
     50% { opacity: 0.3; }
   }
 
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
   /* HERO */
   #hero {
     min-height: 100vh;
@@ -185,6 +190,13 @@
     color: var(--text);
     line-height: 1.1;
     margin-bottom: 1.25rem;
+  }
+
+  .hero-cursor {
+    display: inline-block;
+    color: var(--cyan);
+    animation: blink 1s ease infinite;
+    margin-left: 2px;
   }
 
   .hero-sub {
@@ -750,8 +762,8 @@
     .timeline-year { text-align: left; padding-right: 0; padding-bottom: 0.25rem; }
     .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
 
-    /* Hide scroll hint on mobile — overlaps CTAs */
-    .scroll-hint { display: none; }
+    /* Move scroll hint down on mobile so it clears the CTAs */
+    .scroll-hint { bottom: 0.5rem; }
 
     /* AI bubble — full width panel on mobile */
     .ai-bubble {
@@ -815,11 +827,11 @@
   <div class="hero-glow"></div>
   <div class="hero-avatar">DH</div>
   <p class="hero-prompt"><span class="sym-gt">&gt;</span> <span class="sym-dollar">$</span> whoami</p>
-  <h1>Daniel Hinojosa</h1>
+  <h1><span class="h1-name">Daniel Hinojosa</span></h1>
   <p class="hero-sub">
     Technical Program Manager &amp; indie developer building enterprise integrations,
     AI-powered tools, and platform-scale software. 20 years in FinTech &amp; mortgage tech.
-    Based in Houston, TX.
+    Based in Houston, TX.<span class="hero-cursor">▊</span>
   </p>
   <div class="hero-tags">
     <span class="tag tag-cyan">Enterprise Integrations</span>
@@ -1202,6 +1214,82 @@ Keep answers under 3 sentences unless more detail is needed. Be professional but
   messages.scrollTop = messages.scrollHeight;
 }
 </script>
+<script>
+// Text scramble effect — matches fermartz.com terminal glitch
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    this.chars = '!<>-_\\/[]{}—=+*^?#@$%&0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    this.update = this.update.bind(this);
+  }
+  setText(newText) {
+    const oldText = this.el.innerText;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise(resolve => this.resolve = resolve);
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 10);
+      const end = start + Math.floor(Math.random() * 12);
+      this.queue.push({ from, to, start, end });
+    }
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      if (this.frame >= end) {
+        complete++;
+        output += to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.28) {
+          char = this.chars[Math.floor(Math.random() * this.chars.length)];
+          this.queue[i].char = char;
+        }
+        const colors = ['#3dd6ac', '#9b6dff', '#ff6b9d'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        output += `<span style="color:${color};opacity:0.7">${char}</span>`;
+      } else {
+        output += from;
+      }
+    }
+    this.el.innerHTML = output;
+    if (complete === this.queue.length) {
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.querySelector('.h1-name');
+  if (!el) return;
+  const finalText = el.innerText;
+  const fx = new TextScramble(el);
+
+  // Run on page load
+  fx.setText(finalText);
+
+  // Re-run on hover with a delay before re-scrambling
+  let timeout;
+  el.closest('h1').addEventListener('mouseenter', () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fx.setText(finalText), 200);
+  });
+
+  // Also auto-repeat every 8 seconds
+  setInterval(() => fx.setText(finalText), 8000);
+});
+</script>
+
   <!-- Web Analytics -->
 <script defer src="/_vercel/insights/script.js"></script>
 
