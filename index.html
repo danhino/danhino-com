@@ -11,6 +11,7 @@
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="theme-color" content="#080b10" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080b10'/><polygon points='16,2 28,9 28,23 16,30 4,23 4,9' fill='none' stroke='%23151b2b' stroke-width='1'/><text x='16' y='21' font-family='monospace' font-size='13' font-weight='700' fill='%233dd6ac' text-anchor='middle'>%24</text></svg>" />
 <title>Daniel Hinojosa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -748,6 +749,37 @@
     .timeline-item::after { display: none; }
     .timeline-year { text-align: left; padding-right: 0; padding-bottom: 0.25rem; }
     .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+    /* Hide scroll hint on mobile — overlaps CTAs */
+    .scroll-hint { display: none; }
+
+    /* AI bubble — full width panel on mobile */
+    .ai-bubble {
+      bottom: 0;
+      right: 0;
+      left: 0;
+      width: 100%;
+    }
+    .ai-btn {
+      width: 100%;
+      justify-content: center;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      padding: 1rem;
+    }
+    .ai-panel {
+      position: fixed;
+      bottom: 52px;
+      left: 0;
+      right: 0;
+      width: 100%;
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
+    }
+    .ai-messages { height: 220px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
